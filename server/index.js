@@ -6,6 +6,7 @@ const url = 'mongodb://127.0.0.1:27017/signatures';
 const PORT = process.env.PORT || 3001;
 
 const cors = require('cors');
+
 const corsOptions ={
     origin:'http://localhost:3000', 
     credentials:true,            //access-control-allow-credentials:true
@@ -20,6 +21,8 @@ mongoose.connect(url, function (err, db) {
     console.log('Connection established to', url);
   }
  });
+
+ app.use(express.json());
  //==========================//
 //====ROOT DIRECTORY===//
   app.get('/', function(req, res) {
@@ -37,9 +40,12 @@ mongoose.connect(url, function (err, db) {
   app.post('/api/signatures', function(req, res) {
     console.log(req.body);
     Signature.create({
-    
+      name: req.body.name,
       message: req.body.message,
-    })
+    }).then(signature => {
+      res.json(signature)
+    });
+    
   });
   //==========================//
   app.listen(PORT, () => {
